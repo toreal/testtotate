@@ -58,9 +58,10 @@ struct AxisAngle4d
 	double m10 = tmp1 + tmp2;
 	double m01 = tmp1 - tmp2;
 	 tmp1 = a1.x*a1.z*t;
-	 	tmp2 = a1.y*s;
+	 tmp2 = a1.y*s;
 	double 	m20 = tmp1 - tmp2;
-	double 	m02 = tmp1 + tmp2;    tmp1 = a1.y*a1.z*t;
+	double 	m02 = tmp1 + tmp2;    
+	tmp1 = a1.y*a1.z*t;
 	tmp2 = a1.x*s;
 	double m21 = tmp1 + tmp2;
 	double m12 = tmp1 - tmp2;
@@ -165,7 +166,17 @@ void readPara(Camera & cam)
 
 	Mat r21 = rot1*rot0.inv() ;
 
-	Mat t21= -r21*tvecs[0].t()+tvecs[1].t();
+	
+	AxisAngle4d a1;
+	a1.angle = 22.5f*M_PI/180;
+	a1.x = 0;
+	a1.y = 0;
+	a1.z = 1;
+
+	matrixFromAxisAngle(a1, r21);
+
+	//Mat t21 = -r21*tvecs[0].t() + tvecs[1].t(); 理論上的值.但如果轉點在圓心,可假設t 都一樣,故可取t[0]
+	Mat t21 = -r21*tvecs[0].t() + tvecs[0].t();
 
 
 	Mat pw=Mat::zeros(3,1,CV_64F);
